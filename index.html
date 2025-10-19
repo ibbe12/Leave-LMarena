@@ -1,0 +1,862 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Annual Leave Planner (2026–2027)</title>
+<style>
+  :root {
+    --bg: #0b0d10;
+    --card: #141820;
+    --muted: #8b93a1;
+    --text: #e8edf2;
+    --surface: #1b2130;
+    --accent: #5b8cff;
+    --accent-2: #16c79a;
+    --danger: #ff5d6c;
+    --warn: #ffb020;
+    --ok: #27c899;
+    --outline: #2a3243;
+    --chip-bg: #232a3b;
+    --today: #2b3348;
+    --shadow: 0 10px 30px rgba(0,0,0,.35);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+    color: var(--text);
+    background: radial-gradient(1200px 700px at 10% -10%, #17203a 0%, #0b0d10 55%) fixed, var(--bg);
+  }
+
+  a { color: var(--accent); text-decoration: none; }
+  .hidden { display: none !important; }
+
+  .container {
+    max-width: 1100px;
+    margin: 24px auto 80px;
+    padding: 0 16px;
+  }
+
+  .card {
+    background: linear-gradient(180deg, rgba(255,255,255,.02), transparent), var(--card);
+    border: 1px solid var(--outline);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+  }
+
+  /* Login */
+  #login {
+    max-width: 520px;
+    margin: 80px auto;
+    padding: 28px;
+  }
+  #login h1 {
+    margin: 0 0 4px;
+    font-size: 24px;
+    letter-spacing: .2px;
+  }
+  .sub {
+    color: var(--muted);
+    margin-bottom: 18px;
+    font-size: 14px;
+  }
+  .row {
+    display: flex; gap: 12px;
+  }
+  .field {
+    display: grid; gap: 6px;
+    margin-bottom: 14px;
+  }
+  label { font-size: 13px; color: var(--muted); }
+  select, input[type="password"] {
+    width: 100%;
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--outline);
+    border-radius: 10px;
+    padding: 12px 12px;
+    outline: none;
+    font-size: 15px;
+  }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    gap: 8px;
+    border: 1px solid var(--outline);
+    color: var(--text);
+    background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+    padding: 12px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .btn.primary {
+    border-color: transparent;
+    background: linear-gradient(180deg, #6fa0ff, #527ffb);
+    color: #0b1220;
+  }
+  .btn.warn { background: linear-gradient(180deg,#ffc86d,#ffb347); color:#221608; border-color: transparent; }
+  .btn:disabled { opacity: .6; cursor: not-allowed; }
+
+  .helper {
+    margin-top: 12px;
+    font-size: 13px; color: var(--muted);
+  }
+  .helper code {
+    background: var(--surface);
+    border: 1px solid var(--outline);
+    padding: 2px 6px;
+    border-radius: 6px;
+    color: #cfe3ff;
+  }
+
+  /* App header */
+  #appHeader {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 16px;
+    position: sticky; top: 0; z-index: 10;
+    background: linear-gradient(180deg, rgba(15,18,28,.9), rgba(15,18,28,.66) 60%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--outline);
+    margin-bottom: 12px;
+  }
+  .brand {
+    display: flex; align-items: center; gap: 12px; font-weight: 700;
+    letter-spacing: .4px;
+  }
+  .brand .dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--accent-2); box-shadow: 0 0 0 6px rgba(22,199,154,.15);
+  }
+  .userBox { display: flex; align-items: center; gap: 8px; color: var(--muted); }
+  .userChip {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--chip-bg);
+    border: 1px solid var(--outline);
+    padding: 6px 10px; border-radius: 999px; font-size: 13px;
+  }
+  .userSwatch { width: 12px; height: 12px; border-radius: 50%; border: 1px solid #00000040; }
+
+  /* Layout */
+  #main {
+    display: grid; grid-template-columns: 260px 1fr; gap: 16px;
+  }
+  @media (max-width: 900px) {
+    #main { grid-template-columns: 1fr; }
+  }
+
+  /* Sidebar */
+  #sidebar {
+    padding: 14px;
+  }
+  #sidebar h3 { margin: 6px 0 8px; font-size: 14px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .6px; }
+  .legend { display: grid; gap: 8px; }
+  .legendItem {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px; border-radius: 10px; border: 1px dashed var(--outline);
+    background: rgba(255,255,255,.02);
+  }
+  .legendSwatch { width: 14px; height: 14px; border-radius: 50%; border: 1px solid #00000040; }
+  .legendName { font-size: 14px; }
+  .note {
+    font-size: 13px; color: var(--muted); line-height: 1.4;
+    background: rgba(255,255,255,.03);
+    border: 1px solid var(--outline);
+    border-radius: 10px; padding: 10px; margin-top: 10px;
+  }
+
+  /* Calendar */
+  #calendarCard { padding: 14px; }
+  .calHeader {
+    display: flex; align-items: center; gap: 10px; justify-content: space-between;
+    padding: 6px 8px 14px;
+  }
+  .nav {
+    display: inline-flex; gap: 6px;
+  }
+  .nav .btn {
+    padding: 8px 12px; border-radius: 10px;
+  }
+  .monthLabel {
+    font-weight: 700; letter-spacing: .3px; font-size: 18px;
+  }
+
+  .grid {
+    display: grid; grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+  }
+  .dow {
+    text-align: center; font-size: 12px; color: var(--muted);
+    padding: 8px 0; text-transform: uppercase; letter-spacing: .6px;
+  }
+  .cell {
+    min-height: 88px;
+    border-radius: 12px;
+    background: var(--surface);
+    border: 1px solid var(--outline);
+    padding: 6px 8px;
+    position: relative;
+    display: grid; grid-template-rows: auto 1fr; gap: 4px;
+    overflow: hidden;
+  }
+  .cell.disabled {
+    background: #12161f;
+    color: #5e6777;
+    border-style: dashed;
+    opacity: .75;
+  }
+  .cell:not(.disabled):hover {
+    border-color: #435170; box-shadow: 0 0 0 3px rgba(91,140,255,.12) inset;
+    cursor: pointer;
+  }
+  .dateNum {
+    font-size: 13px; color: var(--muted);
+    display: inline-block;
+  }
+  .today .dateNum {
+    color: #d9e6ff;
+    background: var(--today);
+    padding: 2px 7px; border-radius: 999px;
+    border: 1px solid #3a4563;
+  }
+  .pill {
+    justify-self: start;
+    margin-top: 2px;
+    font-size: 12px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: var(--chip-bg);
+    border: 1px solid var(--outline);
+    display: inline-flex; align-items: center; gap: 8px;
+    max-width: 100%;
+  }
+  .pill .name {
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .leftStripe {
+    content: "";
+    position: absolute; left: 0; top: 0; bottom: 0; width: 4px; opacity: .9;
+  }
+  .mine { border-color: #66e1bc; box-shadow: 0 0 0 2px rgba(102,225,188,.18) inset; }
+  .taken { opacity: .98; }
+
+  /* Frozen "All taken leave ranges" list */
+  .list {
+    margin-top: 14px; padding: 12px; border-radius: 12px;
+    border: 1px solid var(--outline);
+    background: rgba(255,255,255,.02);
+  }
+  .list h4 {
+    margin: 0 0 8px; font-size: 14px; color: var(--muted); text-transform: uppercase; letter-spacing: .6px;
+  }
+  .listItem {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px; border-bottom: 1px dashed #263149;
+    line-height: 1.2;
+  }
+  .listItem:last-child { border-bottom: 0; }
+  .whoDot { width: 10px; height: 10px; border-radius: 50%; border: 1px solid #00000040; }
+  .whoName { font-weight: 600; color: #e2ecff; }
+  .rangeText { color: #c9d7f2; }
+
+  /* Admin tools */
+  #adminTools {
+    display: grid; gap: 10px;
+    border-top: 1px dashed var(--outline);
+    padding-top: 12px; margin-top: 12px;
+  }
+  #adminTools .line { display: flex; gap: 10px; align-items: center; }
+  #adminTools select {
+    background: var(--surface); border: 1px solid var(--outline); color: var(--text);
+    padding: 10px 10px; border-radius: 10px;
+  }
+  .dangerLink {
+    border: 1px solid #3b2530; background: #2a1420; color: #ff9aad;
+  }
+
+  /* Alerts/hints */
+  .hint {
+    font-size: 13px; color: var(--muted);
+  }
+</style>
+</head>
+<body>
+  <header id="appHeader" class="hidden">
+    <div class="brand">
+      <div class="dot" aria-hidden="true"></div>
+      Annual Leave Planner
+      <span class="hint" id="rangeHint"></span>
+    </div>
+    <div class="userBox">
+      <span id="currentUserChip" class="userChip">
+        <span class="userSwatch" id="currentUserSwatch"></span>
+        <span id="currentUserName"></span>
+      </span>
+      <button id="logoutBtn" class="btn" title="Sign out">Logout</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- Login -->
+    <section id="login" class="card">
+      <h1>Sign in</h1>
+      <div class="sub">Demo credentials (front-end only). Admin can assign/remove for anyone.</div>
+
+      <div class="field">
+        <label for="username">User</label>
+        <select id="username"></select>
+      </div>
+
+      <div class="field">
+        <label for="password">Password</label>
+        <input id="password" type="password" placeholder="Enter password" />
+      </div>
+
+      <div class="row">
+        <button id="loginBtn" class="btn primary">Sign in</button>
+        <button id="fillAdmin" class="btn">Use Admin</button>
+      </div>
+
+      <div class="helper">
+        Admin → <code>Admin / Admin@Leave</code>
+        • Staff 01 → <code>Staff 01 / S01@Leave</code>
+      </div>
+    </section>
+
+    <!-- App -->
+    <section id="app" class="hidden">
+      <div id="main">
+        <aside id="sidebar" class="card">
+          <h3>Legend</h3>
+          <div class="legend" id="legend"></div>
+
+          <div class="note">
+            • Click a date to toggle your leave.<br/>
+            • Only one person can take a given day (no overlaps).<br/>
+            • Everyone can see all taken leaves.<br/>
+            • Admin can assign to any staff or clear a day.
+          </div>
+
+          <div id="adminTools" class="hidden">
+            <h3>Admin tools</h3>
+            <div class="line">
+              <label for="adminAssign">Assign To</label>
+              <select id="adminAssign"></select>
+            </div>
+            <div class="hint">
+              Choose a staff, then click dates to assign. Pick CLEAR to remove existing bookings. Reassigns will ask for confirmation.
+            </div>
+            <div class="line">
+              <button id="clearAllBtn" class="btn dangerLink">Clear all bookings</button>
+            </div>
+          </div>
+        </aside>
+
+        <main id="calendarCard" class="card">
+          <div class="calHeader">
+            <div class="nav">
+              <button id="prevBtn" class="btn" title="Previous month">◀</button>
+              <button id="todayBtn" class="btn">Go to Jan 2026</button>
+              <button id="nextBtn" class="btn" title="Next month">▶</button>
+            </div>
+            <div class="monthLabel" id="monthLabel">January 2026</div>
+            <div class="hint">Click a date to book or unbook</div>
+          </div>
+
+          <div class="grid" id="dowRow"></div>
+          <div class="grid" id="calendarGrid"></div>
+
+          <div class="list">
+            <h4 id="listTitle">All taken leave ranges</h4>
+            <div id="rangesList"></div>
+          </div>
+        </main>
+      </div>
+    </section>
+  </div>
+
+<script>
+  // --------------------------
+  // Data
+  // --------------------------
+  const START = { y: 2026, m: 0, d: 1 };  // Jan=0
+  const END   = { y: 2027, m: 0, d: 30 }; // Jan 30, 2027
+  const START_DATE = new Date(START.y, START.m, START.d);
+  const END_DATE   = new Date(END.y, END.m, END.d);
+
+  const STORAGE = {
+    LEAVES: 'alp_leaves_v1',
+    CURRENT_USER: 'alp_current_user_v1'
+  };
+
+  // Users (11 staff + 1 admin). Demo only: passwords are visible client-side.
+  const STAFF_COLORS = [
+    '#1abc9c', '#e74c3c', '#3498db', '#9b59b6', '#f1c40f', '#e67e22',
+    '#2ecc71', '#e84393', '#16a085', '#34495e', '#d35400'
+  ];
+
+  const USERS = [
+  { id: 'admin', name: 'Admin', role: 'admin', password: 'Admin@Leave', color: '#ffffff' },
+  { id: 's01', name: 'Ahmed Nabeel', role: 'staff', password: 'moNar', color: STAFF_COLORS[0] },
+  { id: 's02', name: 'Ahmed Naufal', role: 'staff', password: 'ROpYr', color: STAFF_COLORS[1] },
+  { id: 's03', name: 'Ahmed Falah', role: 'staff', password: 'pAGON', color: STAFF_COLORS[2] },
+  { id: 's04', name: 'Ali Rilwan', role: 'staff', password: 'naReP', color: STAFF_COLORS[3] },
+  { id: 's05', name: 'Mohamed Salim', role: 'staff', password: 'ranGE', color: STAFF_COLORS[4] },
+  { id: 's06', name: 'Ali Shareef', role: 'staff', password: 'NFlUD', color: STAFF_COLORS[5] },
+  { id: 's07', name: 'Moosa Mohamed', role: 'staff', password: 'iNAtO', color: STAFF_COLORS[6] },
+  { id: 's08', name: 'Ali Arushan', role: 'staff', password: 'dviSp', color: STAFF_COLORS[7] },
+  { id: 's09', name: 'Abdulla Rasheed', role: 'staff', password: 'THalE', color: STAFF_COLORS[8] },
+  { id: 's10', name: 'Sharafudheen Mohamed', role: 'staff', password: 'rcUla', color: STAFF_COLORS[9] },
+  { id: 's11', name: 'Ahmed Ashfaq', role: 'staff', password: 'CLeTR', color: STAFF_COLORS[10] }
+];
+
+  const USERS_BY_ID = Object.fromEntries(USERS.map(u => [u.id, u]));
+
+  // --------------------------
+  // State
+  // --------------------------
+  let currentUser = null; // {id, name, role, color}
+  let leaves = loadLeaves(); // { 'YYYY-MM-DD': userId }
+  let view = { y: START.y, m: START.m };
+
+  // --------------------------
+  // Utils
+  // --------------------------
+  function pad(n){ return n < 10 ? '0' + n : '' + n; }
+  function iso(y,m,d){ return `${y}-${pad(m+1)}-${pad(d)}`; } // month is 0-based in JS
+  function fromISO(str){
+    const [Y,M,D] = str.split('-').map(Number);
+    return new Date(Y, M-1, D);
+  }
+  function addDays(date, n){
+    const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    d.setDate(d.getDate() + n);
+    return d;
+  }
+  function isNextDay(prevISO, nextISO){
+    const d1 = fromISO(prevISO);
+    const d2 = fromISO(nextISO);
+    const d1n = addDays(d1, 1);
+    return d1n.getFullYear() === d2.getFullYear() && d1n.getMonth() === d2.getMonth() && d1n.getDate() === d2.getDate();
+  }
+  function fmtLong(date){
+    const opts = { day: '2-digit', month: 'short', year: 'numeric' };
+    return date.toLocaleDateString(undefined, opts);
+  }
+  function monthLabel(y, m){
+    const dt = new Date(y, m, 1);
+    return dt.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+  }
+  function withinRange(y, m, d){
+    const dt = new Date(y, m, d);
+    return dt >= START_DATE && dt <= END_DATE;
+  }
+  function daysInMonth(y, m){
+    return new Date(y, m+1, 0).getDate();
+  }
+  function firstDOW(y, m){ // 0=Sun..6=Sat
+    return new Date(y, m, 1).getDay();
+  }
+  function clampViewToRange(){
+    const viewDate = new Date(view.y, view.m, 1);
+    const min = new Date(START.y, START.m, 1);
+    const max = new Date(END.y, END.m, 1);
+    if (viewDate < min) view = { y: START.y, m: START.m };
+    if (viewDate > max) view = { y: END.y, m: END.m };
+  }
+
+  // --------------------------
+  // Storage
+  // --------------------------
+  function loadLeaves(){
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE.LEAVES)) || {};
+    } catch { return {}; }
+  }
+  function saveLeaves(){
+    localStorage.setItem(STORAGE.LEAVES, JSON.stringify(leaves));
+  }
+  function saveCurrentUser(){
+    localStorage.setItem(STORAGE.CURRENT_USER, currentUser?.id || '');
+  }
+  function loadCurrentUser(){
+    const id = localStorage.getItem(STORAGE.CURRENT_USER);
+    if (!id) return null;
+    return USERS_BY_ID[id] || null;
+  }
+
+  // --------------------------
+  // DOM refs
+  // --------------------------
+  const elLogin = document.getElementById('login');
+  const elLoginBtn = document.getElementById('loginBtn');
+  const elUsername = document.getElementById('username');
+  const elPassword = document.getElementById('password');
+  const elFillAdmin = document.getElementById('fillAdmin');
+
+  const elHeader = document.getElementById('appHeader');
+  const elRangeHint = document.getElementById('rangeHint');
+  const elLogout = document.getElementById('logoutBtn');
+  const elCurrentUserName = document.getElementById('currentUserName');
+  const elCurrentUserSwatch = document.getElementById('currentUserSwatch');
+
+  const elApp = document.getElementById('app');
+  const elLegend = document.getElementById('legend');
+  const elAdminTools = document.getElementById('adminTools');
+  const elAdminAssign = document.getElementById('adminAssign');
+  const elClearAll = document.getElementById('clearAllBtn');
+
+  const elPrev = document.getElementById('prevBtn');
+  const elNext = document.getElementById('nextBtn');
+  const elToday = document.getElementById('todayBtn');
+  const elMonthLabel = document.getElementById('monthLabel');
+
+  const elDOW = document.getElementById('dowRow');
+  const elGrid = document.getElementById('calendarGrid');
+
+  const elRangesList = document.getElementById('rangesList');
+  const elListTitle = document.getElementById('listTitle');
+
+  // --------------------------
+  // Init
+  // --------------------------
+  init();
+
+  function init(){
+    // Populate login user list
+    elUsername.innerHTML = USERS.map(u => `<option value="${u.id}">${u.name}</option>`).join('');
+
+    // Range hint
+    elRangeHint.textContent = `• ${fmtLong(START_DATE)} - ${fmtLong(END_DATE)}`;
+
+    // DOW header
+    const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    elDOW.innerHTML = days.map(d => `<div class="dow">${d}</div>`).join('');
+
+    // Legend
+    elLegend.innerHTML = USERS.filter(u => u.role !== 'admin').map(u => `
+      <div class="legendItem">
+        <span class="legendSwatch" style="background:${u.color}"></span>
+        <span class="legendName">${u.name}</span>
+      </div>
+    `).join('');
+
+    // Admin assign select - includes CLEAR
+    elAdminAssign.innerHTML = [
+      `<option value="">— Select —</option>`,
+      `<option value="__CLEAR__">CLEAR (remove booking)</option>`,
+      ...USERS.filter(u => u.role !== 'admin').map(u => `<option value="${u.id}">${u.name}</option>`)
+    ].join('');
+
+    // Events
+    elLoginBtn.addEventListener('click', onLogin);
+    elFillAdmin.addEventListener('click', () => {
+      elUsername.value = 'admin';
+      elPassword.value = 'Admin@Leave';
+    });
+    elLogout.addEventListener('click', onLogout);
+    elPrev.addEventListener('click', () => { view.m--; if(view.m<0){view.m=11; view.y--;} clampViewToRange(); render(); });
+    elNext.addEventListener('click', () => { view.m++; if(view.m>11){view.m=0; view.y++;} clampViewToRange(); render(); });
+    elToday.addEventListener('click', () => { view = { y: START.y, m: START.m }; render(); });
+    elClearAll.addEventListener('click', onClearAll);
+
+    // Auto-login if stored
+    const saved = loadCurrentUser();
+    if (saved){
+      currentUser = saved;
+      showApp();
+    } else {
+      showLogin();
+    }
+  }
+
+  function showLogin(){
+    elLogin.classList.remove('hidden');
+    elApp.classList.add('hidden');
+    elHeader.classList.add('hidden');
+    elPassword.value = '';
+  }
+
+  function showApp(){
+    elLogin.classList.add('hidden');
+    elApp.classList.remove('hidden');
+    elHeader.classList.remove('hidden');
+    elCurrentUserName.textContent = currentUser.name;
+    elCurrentUserSwatch.style.background = currentUser.color || '#999';
+
+    const isAdmin = currentUser.role === 'admin';
+    elAdminTools.classList.toggle('hidden', !isAdmin);
+    document.getElementById('todayBtn').textContent = 'Go to Jan 2026';
+
+    render();
+  }
+
+  // --------------------------
+  // Auth
+  // --------------------------
+  function onLogin(){
+    const id = elUsername.value;
+    const pwd = elPassword.value.trim();
+    const user = USERS_BY_ID[id];
+    if (!user) return alert('Unknown user.');
+
+    // Basic client-side check (demo only)
+    if (pwd !== user.password) {
+      alert('Incorrect password.');
+      return;
+    }
+
+    currentUser = user;
+    saveCurrentUser();
+    showApp();
+  }
+
+  function onLogout(){
+    currentUser = null;
+    saveCurrentUser();
+    showLogin();
+  }
+
+  // --------------------------
+  // Render calendar + frozen list
+  // --------------------------
+  function render(){
+    elMonthLabel.textContent = monthLabel(view.y, view.m);
+    renderGrid();
+    renderRangesList(); // frozen across months
+    updateNavButtons();
+  }
+
+  function updateNavButtons(){
+    const min = new Date(START.y, START.m, 1);
+    const max = new Date(END.y, END.m, 1);
+    const cur = new Date(view.y, view.m, 1);
+    elPrev.disabled = cur <= min;
+    elNext.disabled = cur >= max;
+  }
+
+  function renderGrid(){
+    elGrid.innerHTML = '';
+    const y = view.y, m = view.m;
+    const first = firstDOW(y, m);
+    const dim = daysInMonth(y, m);
+
+    // For grid: we render up to 6 weeks * 7 days = 42 cells
+    let cells = [];
+    const prevMonth = (m - 1 + 12) % 12;
+    const prevYear = m === 0 ? y - 1 : y;
+    const prevDim = daysInMonth(prevYear, prevMonth);
+
+    // Leading days from previous month
+    for (let i = 0; i < first; i++){
+      const d = prevDim - first + 1 + i;
+      const inRange = withinRange(prevYear, prevMonth, d);
+      const idate = iso(prevYear, prevMonth, d);
+      cells.push(cellHTML(prevYear, prevMonth, d, {
+        disabled: true, inRange, idate
+      }));
+    }
+
+    // Current month days
+    for (let d = 1; d <= dim; d++){
+      const inRange = withinRange(y, m, d);
+      const idate = iso(y, m, d);
+      cells.push(cellHTML(y, m, d, {
+        disabled: !inRange, inRange, idate
+      }));
+    }
+
+    // Trailing days
+    const total = cells.length;
+    const remaining = (Math.ceil(total / 7) * 7) - total;
+    const nextMonth = (m + 1) % 12;
+    const nextYear = m === 11 ? y + 1 : y;
+    for (let d = 1; d <= remaining; d++){
+      const inRange = withinRange(nextYear, nextMonth, d);
+      const idate = iso(nextYear, nextMonth, d);
+      cells.push(cellHTML(nextYear, nextMonth, d, {
+        disabled: true, inRange, idate
+      }));
+    }
+
+    elGrid.innerHTML = cells.join('');
+    // Bind events
+    document.querySelectorAll('.cell').forEach(($c) => {
+      if ($c.classList.contains('disabled')) return;
+      $c.addEventListener('click', () => onDayClick($c.dataset.date));
+    });
+  }
+
+  function cellHTML(y, m, d, { disabled, inRange, idate }){
+    const now = new Date();
+    const isToday = now.getFullYear() === y && now.getMonth() === m && now.getDate() === d;
+
+    const bookedBy = leaves[idate]; // userId or undefined
+    const user = bookedBy ? USERS_BY_ID[bookedBy] : null;
+    const mine = user && currentUser && user.id === currentUser.id;
+    const classes = ['cell'];
+    if (disabled || !inRange) classes.push('disabled');
+    if (isToday) classes.push('today');
+    if (mine) classes.push('mine');
+    if (bookedBy) classes.push('taken');
+
+    const leftStripe = user ? `<span class="leftStripe" style="background:${user.color}"></span>` : '';
+    const pill = user ? `
+      <span class="pill" title="Taken by ${user.name}">
+        <span class="name" style="color:${user.color}">${user.name}</span>
+      </span>
+    ` : '';
+
+    return `
+      <div class="${classes.join(' ')}" data-date="${idate}" title="${idate}${user ? ' — ' + user.name : ''}">
+        ${leftStripe}
+        <div class="dateNum">${d}</div>
+        ${pill}
+      </div>
+    `;
+  }
+
+  // --------------------------
+  // Click handling
+  // --------------------------
+  function onDayClick(idate){
+    if (!currentUser) return;
+    const isAdmin = currentUser.role === 'admin';
+    const bookedBy = leaves[idate];
+
+    if (isAdmin){
+      const sel = elAdminAssign.value;
+      if (!sel){
+        // No selection – if day is booked, offer to clear
+        if (bookedBy){
+          const u = USERS_BY_ID[bookedBy];
+          if (confirm(`${fmtLong(fromISO(idate))} is taken by ${u.name}. Clear it?`)){
+            delete leaves[idate];
+            saveLeaves();
+            render();
+          }
+        }
+        return;
+      }
+      if (sel === '__CLEAR__'){
+        if (bookedBy){
+          delete leaves[idate];
+          saveLeaves();
+          render();
+        }
+        return;
+      }
+      // Assign to selected staff
+      if (bookedBy && bookedBy !== sel){
+        const fromU = USERS_BY_ID[bookedBy];
+        const toU = USERS_BY_ID[sel];
+        const ok = confirm(`Reassign ${fmtLong(fromISO(idate))} from ${fromU.name} to ${toU.name}?`);
+        if (!ok) return;
+      }
+      // Toggle if same target already holds it
+      if (bookedBy === sel){
+        delete leaves[idate];
+      } else {
+        leaves[idate] = sel;
+      }
+      saveLeaves();
+      render();
+      return;
+    }
+
+    // Staff behavior: toggle own day if free, otherwise alert
+    if (!bookedBy){
+      leaves[idate] = currentUser.id;
+      saveLeaves();
+      render();
+      return;
+    }
+    if (bookedBy === currentUser.id){
+      delete leaves[idate];
+      saveLeaves();
+      render();
+      return;
+    }
+    // Overlap attempt
+    const u = USERS_BY_ID[bookedBy];
+    alert(`${fmtLong(fromISO(idate))} is already taken by ${u.name}. Overlapping leaves are not allowed.`);
+  }
+
+  // --------------------------
+  // Frozen list: all leave ranges across all months
+  // --------------------------
+  function renderRangesList(){
+    // Build ranges per staff across entire dataset
+    // entries: [dateISO, userId], sorted by user then date
+    const entries = Object.entries(leaves)
+      .filter(([date, uid]) => !!USERS_BY_ID[uid])
+      .sort((a, b) => {
+        if (a[1] === b[1]) return a[0] < b[0] ? -1 : 1; // date asc
+        return a[1] < b[1] ? -1 : 1; // user asc
+      });
+
+    const ranges = [];
+    let curUser = null, curStart = null, curPrev = null;
+
+    for (const [dateStr, uid] of entries){
+      if (curUser === null){
+        curUser = uid; curStart = dateStr; curPrev = dateStr;
+        continue;
+      }
+      if (uid === curUser && isNextDay(curPrev, dateStr)){
+        curPrev = dateStr; // extend current range
+        continue;
+      }
+      // close previous range
+      ranges.push({ uid: curUser, start: curStart, end: curPrev });
+      // start new range
+      curUser = uid; curStart = dateStr; curPrev = dateStr;
+    }
+    if (curUser !== null){
+      ranges.push({ uid: curUser, start: curStart, end: curPrev });
+    }
+
+    // Sort ranges by start date (global chronological)
+    ranges.sort((r1, r2) => r1.start < r2.start ? -1 : (r1.start > r2.start ? 1 : 0));
+
+    elListTitle.textContent = `All taken leave ranges (${fmtLong(START_DATE)} — ${fmtLong(END_DATE)})`;
+
+    if (ranges.length === 0){
+      elRangesList.innerHTML = `<div class="hint">No leave ranges yet.</div>`;
+      return;
+    }
+
+    const html = ranges.map(r => {
+      const u = USERS_BY_ID[r.uid];
+      const start = fmtLong(fromISO(r.start));
+      const end = fmtLong(fromISO(r.end));
+      return `
+        <div class="listItem" title="${u.name}: ${start} to ${end}">
+          <span class="whoDot" style="background:${u.color}"></span>
+          <span class="whoName">${u.name}</span>
+          <span class="rangeText">— ${start} → ${end}</span>
+        </div>
+      `;
+    }).join('');
+    elRangesList.innerHTML = html;
+  }
+
+  // --------------------------
+  // Admin: Clear all
+  // --------------------------
+  function onClearAll(){
+    const count = Object.keys(leaves).length;
+    if (count === 0){
+      alert('There are no bookings to clear.');
+      return;
+    }
+    const ok = confirm(`Clear all ${count} booking(s)? This cannot be undone.`);
+    if (!ok) return;
+    leaves = {};
+    saveLeaves();
+    render();
+  }
+
+</script>
+</body>
+</html>
