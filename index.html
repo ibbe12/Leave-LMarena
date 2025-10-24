@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Annual Leave Planner (2026–2027)</title>
+    <title>Annual Leave Planner (2026–2027) — Supabase</title>
     <style>
       :root {
         --bg: #0b0d10;
@@ -14,8 +14,6 @@
         --accent: #5b8cff;
         --accent-2: #16c79a;
         --danger: #ff5d6c;
-        --warn: #ffb020;
-        --ok: #27c899;
         --outline: #2a3243;
         --chip-bg: #232a3b;
         --today: #2b3348;
@@ -27,7 +25,7 @@
       body {
         margin: 0;
         font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI,
-          Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+          Roboto, Helvetica, Arial;
         color: var(--text);
         background: radial-gradient(
               1200px 700px at 10% -10%,
@@ -37,21 +35,14 @@
             fixed,
           var(--bg);
       }
-
-      a {
-        color: var(--accent);
-        text-decoration: none;
-      }
       .hidden {
         display: none !important;
       }
-
       .container {
         max-width: 1100px;
         margin: 24px auto 80px;
         padding: 0 16px;
       }
-
       .card {
         background: linear-gradient(
             180deg,
@@ -63,7 +54,6 @@
         border-radius: 16px;
         box-shadow: var(--shadow);
       }
-
       /* Login */
       #login {
         max-width: 520px;
@@ -73,7 +63,6 @@
       #login h1 {
         margin: 0 0 4px;
         font-size: 24px;
-        letter-spacing: 0.2px;
       }
       .sub {
         color: var(--muted);
@@ -100,7 +89,7 @@
         color: var(--text);
         border: 1px solid var(--outline);
         border-radius: 10px;
-        padding: 12px 12px;
+        padding: 12px;
         outline: none;
         font-size: 15px;
       }
@@ -126,16 +115,10 @@
         background: linear-gradient(180deg, #6fa0ff, #527ffb);
         color: #0b1220;
       }
-      .btn.warn {
-        background: linear-gradient(180deg, #ffc86d, #ffb347);
-        color: #221608;
-        border-color: transparent;
-      }
       .btn:disabled {
         opacity: 0.6;
         cursor: not-allowed;
       }
-
       .helper {
         margin-top: 12px;
         font-size: 13px;
@@ -149,7 +132,7 @@
         color: #cfe3ff;
       }
 
-      /* App header */
+      /* Header */
       #appHeader {
         display: flex;
         align-items: center;
@@ -173,9 +156,8 @@
         align-items: center;
         gap: 12px;
         font-weight: 700;
-        letter-spacing: 0.4px;
       }
-      .brand .dot {
+      .dot {
         width: 10px;
         height: 10px;
         border-radius: 50%;
@@ -225,7 +207,6 @@
         margin: 6px 0 8px;
         font-size: 14px;
         color: var(--muted);
-        font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.6px;
       }
@@ -251,16 +232,6 @@
       .legendName {
         font-size: 14px;
       }
-      .note {
-        font-size: 13px;
-        color: var(--muted);
-        line-height: 1.4;
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid var(--outline);
-        border-radius: 10px;
-        padding: 10px;
-        margin-top: 10px;
-      }
 
       /* Calendar */
       #calendarCard {
@@ -277,16 +248,11 @@
         display: inline-flex;
         gap: 6px;
       }
-      .nav .btn {
-        padding: 8px 12px;
-        border-radius: 10px;
-      }
       .monthLabel {
         font-weight: 700;
         letter-spacing: 0.3px;
         font-size: 18px;
       }
-
       .grid {
         display: grid;
         grid-template-columns: repeat(7, 1fr);
@@ -326,7 +292,6 @@
       .dateNum {
         font-size: 13px;
         color: var(--muted);
-        display: inline-block;
       }
       .today .dateNum {
         color: #d9e6ff;
@@ -354,7 +319,6 @@
         text-overflow: ellipsis;
       }
       .leftStripe {
-        content: "";
         position: absolute;
         left: 0;
         top: 0;
@@ -370,7 +334,7 @@
         opacity: 0.98;
       }
 
-      /* Frozen "All taken leave ranges" list */
+      /* Frozen ranges list */
       .list {
         margin-top: 14px;
         padding: 12px;
@@ -435,12 +399,6 @@
         background: #2a1420;
         color: #ff9aad;
       }
-
-      /* Alerts/hints */
-      .hint {
-        font-size: 13px;
-        color: var(--muted);
-      }
     </style>
   </head>
   <body>
@@ -451,7 +409,7 @@
         <span class="hint" id="rangeHint"></span>
       </div>
       <div class="userBox">
-        <span id="currentUserChip" class="userChip">
+        <span class="userChip">
           <span class="userSwatch" id="currentUserSwatch"></span>
           <span id="currentUserName"></span>
         </span>
@@ -464,27 +422,23 @@
       <section id="login" class="card">
         <h1>Sign in</h1>
         <div class="sub">
-          Demo credentials (front-end only). Admin can assign/remove for anyone.
+          Front-end demo auth; leave data is saved in Supabase.
         </div>
-
         <div class="field">
           <label for="username">User</label>
           <select id="username"></select>
         </div>
-
         <div class="field">
           <label for="password">Password</label>
           <input id="password" type="password" placeholder="Enter password" />
         </div>
-
         <div class="row">
           <button id="loginBtn" class="btn primary">Sign in</button>
           <button id="fillAdmin" class="btn">Use Admin</button>
         </div>
-
         <div class="helper">
-          Admin → <code>Admin / Admin@Leave</code> • Staff 01 →
-          <code>Staff 01 / S01@Leave</code>
+          Admin → <code>Admin / Admin@Leave</code> • Example →
+          <code>Ahmed Nabeel / moNar</code>
         </div>
       </section>
 
@@ -494,12 +448,11 @@
           <aside id="sidebar" class="card">
             <h3>Legend</h3>
             <div class="legend" id="legend"></div>
-
             <div class="note">
               • Click a date to toggle your leave.<br />
               • Only one person can take a given day (no overlaps).<br />
               • Everyone can see all taken leaves.<br />
-              • Admin can assign to any staff or clear a day.
+              • Admin can assign or clear any day.
             </div>
 
             <div id="adminTools" class="hidden">
@@ -507,10 +460,6 @@
               <div class="line">
                 <label for="adminAssign">Assign To</label>
                 <select id="adminAssign"></select>
-              </div>
-              <div class="hint">
-                Choose a staff, then click dates to assign. Pick CLEAR to remove
-                existing bookings. Reassigns will ask for confirmation.
               </div>
               <div class="line">
                 <button id="clearAllBtn" class="btn dangerLink">
@@ -545,21 +494,25 @@
       </section>
     </div>
 
-    <script>
-      // --------------------------
-      // Data
-      // --------------------------
+    <!-- Supabase + App -->
+    <script type="module">
+      import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+      // 1) Supabase config — replace with your project values
+      const SUPABASE_URL = "https://clikohrdkrosjjztxgyn.supabase.co";
+      const SUPABASE_ANON_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNsaWtvaHJka3Jvc2pqenR4Z3luIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4MzE1NjEsImV4cCI6MjA3NjQwNzU2MX0.RKt7TgHiMaYAhtaNMA_DYQoTOGimOVAvUSZiwMF53rA";
+      const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+      // 2) Date range
       const START = { y: 2026, m: 0, d: 1 }; // Jan=0
       const END = { y: 2027, m: 0, d: 30 }; // Jan 30, 2027
       const START_DATE = new Date(START.y, START.m, START.d);
       const END_DATE = new Date(END.y, END.m, END.d);
+      const DB_RANGE_START = "2026-01-01";
+      const DB_RANGE_END = "2027-01-30";
 
-      const STORAGE = {
-        LEAVES: "alp_leaves_v1",
-        CURRENT_USER: "alp_current_user_v1",
-      };
-
-      // Users (11 staff + 1 admin). Demo only: passwords are visible client-side.
+      // 3) Users — your staff and passwords
       const STAFF_COLORS = [
         "#1abc9c",
         "#e74c3c",
@@ -573,7 +526,6 @@
         "#34495e",
         "#d35400",
       ];
-
       const USERS = [
         {
           id: "admin",
@@ -660,164 +612,110 @@
           color: STAFF_COLORS[10],
         },
       ];
-
       const USERS_BY_ID = Object.fromEntries(USERS.map((u) => [u.id, u]));
 
-      // --------------------------
-      // State
-      // --------------------------
+      // 4) State
       let currentUser = null; // {id, name, role, color}
-      let leaves = loadLeaves(); // { 'YYYY-MM-DD': userId }
+      let leaves = {}; // { 'YYYY-MM-DD': userId }  <- kept in memory, sourced from Supabase
       let view = { y: START.y, m: START.m };
+      const STORAGE = { CURRENT_USER: "alp_current_user_v1" };
+      let realtimeChannel = null;
 
-      // --------------------------
-      // Utils
-      // --------------------------
-      function pad(n) {
-        return n < 10 ? "0" + n : "" + n;
-      }
-      function iso(y, m, d) {
-        return `${y}-${pad(m + 1)}-${pad(d)}`;
-      } // month is 0-based in JS
-      function fromISO(str) {
-        const [Y, M, D] = str.split("-").map(Number);
+      // 5) Utils
+      const pad = (n) => (n < 10 ? "0" + n : "" + n);
+      const iso = (y, m, d) => `${y}-${pad(m + 1)}-${pad(d)}`;
+      const fromISO = (s) => {
+        const [Y, M, D] = s.split("-").map(Number);
         return new Date(Y, M - 1, D);
-      }
-      function addDays(date, n) {
-        const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-        d.setDate(d.getDate() + n);
-        return d;
-      }
-      function isNextDay(prevISO, nextISO) {
-        const d1 = fromISO(prevISO);
-        const d2 = fromISO(nextISO);
-        const d1n = addDays(d1, 1);
-        return (
-          d1n.getFullYear() === d2.getFullYear() &&
-          d1n.getMonth() === d2.getMonth() &&
-          d1n.getDate() === d2.getDate()
-        );
-      }
-      function fmtLong(date) {
-        const opts = { day: "2-digit", month: "short", year: "numeric" };
-        return date.toLocaleDateString(undefined, opts);
-      }
-      function monthLabel(y, m) {
-        const dt = new Date(y, m, 1);
-        return dt.toLocaleDateString(undefined, {
+      };
+      const fmtLong = (d) =>
+        d.toLocaleDateString(undefined, {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        });
+      const monthLabel = (y, m) =>
+        new Date(y, m, 1).toLocaleDateString(undefined, {
           month: "long",
           year: "numeric",
         });
-      }
-      function withinRange(y, m, d) {
+      const withinRange = (y, m, d) => {
         const dt = new Date(y, m, d);
         return dt >= START_DATE && dt <= END_DATE;
-      }
-      function daysInMonth(y, m) {
-        return new Date(y, m + 1, 0).getDate();
-      }
-      function firstDOW(y, m) {
-        // 0=Sun..6=Sat
-        return new Date(y, m, 1).getDay();
-      }
-      function clampViewToRange() {
-        const viewDate = new Date(view.y, view.m, 1);
+      };
+      const daysInMonth = (y, m) => new Date(y, m + 1, 0).getDate();
+      const firstDOW = (y, m) => new Date(y, m, 1).getDay();
+      const clampViewToRange = () => {
+        const cur = new Date(view.y, view.m, 1);
         const min = new Date(START.y, START.m, 1);
         const max = new Date(END.y, END.m, 1);
-        if (viewDate < min) view = { y: START.y, m: START.m };
-        if (viewDate > max) view = { y: END.y, m: END.m };
-      }
+        if (cur < min) view = { y: START.y, m: START.m };
+        if (cur > max) view = { y: END.y, m: END.m };
+      };
+      const addDays = (date, n) => {
+        const d = new Date(date);
+        d.setDate(d.getDate() + n);
+        return d;
+      };
+      const isNextDay = (a, b) => {
+        const d1 = addDays(fromISO(a), 1);
+        const d2 = fromISO(b);
+        return (
+          d1.getFullYear() === d2.getFullYear() &&
+          d1.getMonth() === d2.getMonth() &&
+          d1.getDate() === d2.getDate()
+        );
+      };
 
-      // --------------------------
-      // Storage
-      // --------------------------
-      function loadLeaves() {
-        try {
-          return JSON.parse(localStorage.getItem(STORAGE.LEAVES)) || {};
-        } catch {
-          return {};
-        }
-      }
-      function saveLeaves() {
-        localStorage.setItem(STORAGE.LEAVES, JSON.stringify(leaves));
-      }
-      function saveCurrentUser() {
-        localStorage.setItem(STORAGE.CURRENT_USER, currentUser?.id || "");
-      }
-      function loadCurrentUser() {
-        const id = localStorage.getItem(STORAGE.CURRENT_USER);
-        if (!id) return null;
-        return USERS_BY_ID[id] || null;
-      }
+      // 6) DOM
+      const $login = document.getElementById("login");
+      const $loginBtn = document.getElementById("loginBtn");
+      const $username = document.getElementById("username");
+      const $password = document.getElementById("password");
+      const $fillAdmin = document.getElementById("fillAdmin");
 
-      // --------------------------
-      // DOM refs
-      // --------------------------
-      const elLogin = document.getElementById("login");
-      const elLoginBtn = document.getElementById("loginBtn");
-      const elUsername = document.getElementById("username");
-      const elPassword = document.getElementById("password");
-      const elFillAdmin = document.getElementById("fillAdmin");
+      const $header = document.getElementById("appHeader");
+      const $rangeHint = document.getElementById("rangeHint");
+      const $logout = document.getElementById("logoutBtn");
+      const $currentUserName = document.getElementById("currentUserName");
+      const $currentUserSwatch = document.getElementById("currentUserSwatch");
 
-      const elHeader = document.getElementById("appHeader");
-      const elRangeHint = document.getElementById("rangeHint");
-      const elLogout = document.getElementById("logoutBtn");
-      const elCurrentUserName = document.getElementById("currentUserName");
-      const elCurrentUserSwatch = document.getElementById("currentUserSwatch");
+      const $app = document.getElementById("app");
+      const $legend = document.getElementById("legend");
+      const $adminTools = document.getElementById("adminTools");
+      const $adminAssign = document.getElementById("adminAssign");
+      const $clearAll = document.getElementById("clearAllBtn");
 
-      const elApp = document.getElementById("app");
-      const elLegend = document.getElementById("legend");
-      const elAdminTools = document.getElementById("adminTools");
-      const elAdminAssign = document.getElementById("adminAssign");
-      const elClearAll = document.getElementById("clearAllBtn");
+      const $prev = document.getElementById("prevBtn");
+      const $next = document.getElementById("nextBtn");
+      const $today = document.getElementById("todayBtn");
+      const $monthLabel = document.getElementById("monthLabel");
+      const $dow = document.getElementById("dowRow");
+      const $grid = document.getElementById("calendarGrid");
 
-      const elPrev = document.getElementById("prevBtn");
-      const elNext = document.getElementById("nextBtn");
-      const elToday = document.getElementById("todayBtn");
-      const elMonthLabel = document.getElementById("monthLabel");
+      const $rangesList = document.getElementById("rangesList");
+      const $listTitle = document.getElementById("listTitle");
 
-      const elDOW = document.getElementById("dowRow");
-      const elGrid = document.getElementById("calendarGrid");
-
-      const elRangesList = document.getElementById("rangesList");
-      const elListTitle = document.getElementById("listTitle");
-
-      // --------------------------
-      // Init
-      // --------------------------
-      init();
-
-      function init() {
-        // Populate login user list
-        elUsername.innerHTML = USERS.map(
+      // 7) Init
+      (async function init() {
+        // Populate UI bits
+        $username.innerHTML = USERS.map(
           (u) => `<option value="${u.id}">${u.name}</option>`
         ).join("");
-
-        // Range hint
-        elRangeHint.textContent = `• ${fmtLong(START_DATE)} - ${fmtLong(
+        $rangeHint.textContent = `• ${fmtLong(START_DATE)} - ${fmtLong(
           END_DATE
         )}`;
-
-        // DOW header
-        const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-        elDOW.innerHTML = days
+        $dow.innerHTML = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
           .map((d) => `<div class="dow">${d}</div>`)
           .join("");
-
-        // Legend
-        elLegend.innerHTML = USERS.filter((u) => u.role !== "admin")
+        $legend.innerHTML = USERS.filter((u) => u.role !== "admin")
           .map(
             (u) => `
-      <div class="legendItem">
-        <span class="legendSwatch" style="background:${u.color}"></span>
-        <span class="legendName">${u.name}</span>
-      </div>
+      <div class="legendItem"><span class="legendSwatch" style="background:${u.color}"></span><span class="legendName">${u.name}</span></div>
     `
           )
           .join("");
-
-        // Admin assign select - includes CLEAR
-        elAdminAssign.innerHTML = [
+        $adminAssign.innerHTML = [
           `<option value="">— Select —</option>`,
           `<option value="__CLEAR__">CLEAR (remove booking)</option>`,
           ...USERS.filter((u) => u.role !== "admin").map(
@@ -826,13 +724,13 @@
         ].join("");
 
         // Events
-        elLoginBtn.addEventListener("click", onLogin);
-        elFillAdmin.addEventListener("click", () => {
-          elUsername.value = "admin";
-          elPassword.value = "Admin@Leave";
+        $loginBtn.addEventListener("click", onLogin);
+        $fillAdmin.addEventListener("click", () => {
+          $username.value = "admin";
+          $password.value = "Admin@Leave";
         });
-        elLogout.addEventListener("click", onLogout);
-        elPrev.addEventListener("click", () => {
+        $logout.addEventListener("click", onLogout);
+        $prev.addEventListener("click", () => {
           view.m--;
           if (view.m < 0) {
             view.m = 11;
@@ -841,7 +739,7 @@
           clampViewToRange();
           render();
         });
-        elNext.addEventListener("click", () => {
+        $next.addEventListener("click", () => {
           view.m++;
           if (view.m > 11) {
             view.m = 0;
@@ -850,74 +748,104 @@
           clampViewToRange();
           render();
         });
-        elToday.addEventListener("click", () => {
+        $today.addEventListener("click", () => {
           view = { y: START.y, m: START.m };
           render();
         });
-        elClearAll.addEventListener("click", onClearAll);
+        $clearAll.addEventListener("click", onClearAll);
 
-        // Auto-login if stored
-        const saved = loadCurrentUser();
-        if (saved) {
-          currentUser = saved;
+        // Load user + leaves from DB
+        const savedUserId = localStorage.getItem(STORAGE.CURRENT_USER);
+        if (savedUserId && USERS_BY_ID[savedUserId]) {
+          currentUser = USERS_BY_ID[savedUserId];
+          await loadLeavesFromDB();
+          subscribeRealtime();
           showApp();
         } else {
           showLogin();
+          // Preload leaves so calendar can display even before login
+          await loadLeavesFromDB();
+          subscribeRealtime();
         }
-      }
+      })();
 
       function showLogin() {
-        elLogin.classList.remove("hidden");
-        elApp.classList.add("hidden");
-        elHeader.classList.add("hidden");
-        elPassword.value = "";
+        $login.classList.remove("hidden");
+        $app.classList.add("hidden");
+        $header.classList.add("hidden");
+        $password.value = "";
       }
 
       function showApp() {
-        elLogin.classList.add("hidden");
-        elApp.classList.remove("hidden");
-        elHeader.classList.remove("hidden");
-        elCurrentUserName.textContent = currentUser.name;
-        elCurrentUserSwatch.style.background = currentUser.color || "#999";
-
-        const isAdmin = currentUser.role === "admin";
-        elAdminTools.classList.toggle("hidden", !isAdmin);
-        document.getElementById("todayBtn").textContent = "Go to Jan 2026";
-
+        $login.classList.add("hidden");
+        $app.classList.remove("hidden");
+        $header.classList.remove("hidden");
+        $currentUserName.textContent = currentUser.name;
+        $currentUserSwatch.style.background = currentUser.color || "#999";
+        $adminTools.classList.toggle("hidden", currentUser.role !== "admin");
         render();
       }
 
-      // --------------------------
-      // Auth
-      // --------------------------
+      // 8) Auth (front-end demo only)
       function onLogin() {
-        const id = elUsername.value;
-        const pwd = elPassword.value.trim();
+        const id = $username.value;
+        const pwd = $password.value.trim();
         const user = USERS_BY_ID[id];
         if (!user) return alert("Unknown user.");
-
-        // Basic client-side check (demo only)
-        if (pwd !== user.password) {
-          alert("Incorrect password.");
-          return;
-        }
+        if (pwd !== user.password) return alert("Incorrect password.");
 
         currentUser = user;
-        saveCurrentUser();
+        localStorage.setItem(STORAGE.CURRENT_USER, user.id);
         showApp();
       }
 
       function onLogout() {
         currentUser = null;
-        saveCurrentUser();
+        localStorage.removeItem(STORAGE.CURRENT_USER);
         showLogin();
       }
 
-      // --------------------------
-      // Render calendar + frozen list
-      // --------------------------
+      // 9) DB: Load + Realtime
+      async function loadLeavesFromDB() {
+        const { data, error } = await supabase
+          .from("leaves")
+          .select("date, staff_id")
+          .gte("date", DB_RANGE_START)
+          .lte("date", DB_RANGE_END);
+        if (error) {
+          console.error("Error loading leaves:", error);
+          return;
+        }
+        leaves = {};
+        for (const row of data) leaves[row.date] = row.staff_id;
+        render();
+      }
+
+      function subscribeRealtime() {
+        if (realtimeChannel) return; // already
+        realtimeChannel = supabase
+          .channel("leaves-changes")
+          .on(
+            "postgres_changes",
+            { event: "*", schema: "public", table: "leaves" },
+            (payload) => {
+              const e = payload.eventType;
+              if (e === "INSERT" || e === "UPDATE") {
+                const row = payload.new;
+                leaves[row.date] = row.staff_id;
+              } else if (e === "DELETE") {
+                const row = payload.old;
+                delete leaves[row.date];
+              }
+              render();
+            }
+          )
+          .subscribe();
+      }
+
+      // 10) Render
       function render() {
-        elMonthLabel.textContent = monthLabel(view.y, view.m);
+        $monthLabel.textContent = monthLabel(view.y, view.m);
         renderGrid();
         renderRangesList(); // frozen across months
         updateNavButtons();
@@ -927,87 +855,76 @@
         const min = new Date(START.y, START.m, 1);
         const max = new Date(END.y, END.m, 1);
         const cur = new Date(view.y, view.m, 1);
-        elPrev.disabled = cur <= min;
-        elNext.disabled = cur >= max;
+        $prev.disabled = cur <= min;
+        $next.disabled = cur >= max;
       }
 
       function renderGrid() {
-        elGrid.innerHTML = "";
+        $grid.innerHTML = "";
         const y = view.y,
           m = view.m;
         const first = firstDOW(y, m);
         const dim = daysInMonth(y, m);
 
-        // For grid: we render up to 6 weeks * 7 days = 42 cells
         let cells = [];
         const prevMonth = (m - 1 + 12) % 12;
         const prevYear = m === 0 ? y - 1 : y;
         const prevDim = daysInMonth(prevYear, prevMonth);
 
-        // Leading days from previous month
+        // Leading
         for (let i = 0; i < first; i++) {
           const d = prevDim - first + 1 + i;
-          const inRange = withinRange(prevYear, prevMonth, d);
-          const idate = iso(prevYear, prevMonth, d);
           cells.push(
             cellHTML(prevYear, prevMonth, d, {
               disabled: true,
-              inRange,
-              idate,
+              idate: iso(prevYear, prevMonth, d),
+              inRange: withinRange(prevYear, prevMonth, d),
             })
           );
         }
-
-        // Current month days
+        // Current
         for (let d = 1; d <= dim; d++) {
-          const inRange = withinRange(y, m, d);
-          const idate = iso(y, m, d);
           cells.push(
             cellHTML(y, m, d, {
-              disabled: !inRange,
-              inRange,
-              idate,
+              disabled: !withinRange(y, m, d),
+              idate: iso(y, m, d),
+              inRange: true,
             })
           );
         }
-
-        // Trailing days
-        const total = cells.length;
-        const remaining = Math.ceil(total / 7) * 7 - total;
+        // Trailing
+        const remaining = Math.ceil(cells.length / 7) * 7 - cells.length;
         const nextMonth = (m + 1) % 12;
         const nextYear = m === 11 ? y + 1 : y;
         for (let d = 1; d <= remaining; d++) {
-          const inRange = withinRange(nextYear, nextMonth, d);
-          const idate = iso(nextYear, nextMonth, d);
           cells.push(
             cellHTML(nextYear, nextMonth, d, {
               disabled: true,
-              inRange,
-              idate,
+              idate: iso(nextYear, nextMonth, d),
+              inRange: withinRange(nextYear, nextMonth, d),
             })
           );
         }
 
-        elGrid.innerHTML = cells.join("");
-        // Bind events
+        $grid.innerHTML = cells.join("");
         document.querySelectorAll(".cell").forEach(($c) => {
           if ($c.classList.contains("disabled")) return;
           $c.addEventListener("click", () => onDayClick($c.dataset.date));
         });
       }
 
-      function cellHTML(y, m, d, { disabled, inRange, idate }) {
+      function cellHTML(y, m, d, { disabled, idate }) {
         const now = new Date();
         const isToday =
           now.getFullYear() === y &&
           now.getMonth() === m &&
           now.getDate() === d;
-
-        const bookedBy = leaves[idate]; // userId or undefined
+        const bookedBy = leaves[idate];
         const user = bookedBy ? USERS_BY_ID[bookedBy] : null;
         const mine = user && currentUser && user.id === currentUser.id;
+
         const classes = ["cell"];
-        if (disabled || !inRange) classes.push("disabled");
+        if (disabled) classes.push("disabled");
         if (isToday) classes.push("today");
         if (mine) classes.push("mine");
         if (bookedBy) classes.push("taken");
@@ -1016,11 +933,7 @@
           ? `<span class="leftStripe" style="background:${user.color}"></span>`
           : "";
         const pill = user
-          ? `
-      <span class="pill" title="Taken by ${user.name}">
-        <span class="name" style="color:${user.color}">${user.name}</span>
-      </span>
-    `
+          ? `<span class="pill" title="Taken by ${user.name}"><span class="name" style="color:${user.color}">${user.name}</span></span>`
           : "";
 
         return `
@@ -1034,18 +947,15 @@
     `;
       }
 
-      // --------------------------
-      // Click handling
-      // --------------------------
-      function onDayClick(idate) {
+      // 11) Click handling with Supabase persistence
+      async function onDayClick(idate) {
         if (!currentUser) return;
         const isAdmin = currentUser.role === "admin";
         const bookedBy = leaves[idate];
 
         if (isAdmin) {
-          const sel = elAdminAssign.value;
+          const sel = $adminAssign.value;
           if (!sel) {
-            // No selection – if day is booked, offer to clear
             if (bookedBy) {
               const u = USERS_BY_ID[bookedBy];
               if (
@@ -1053,22 +963,16 @@
                   `${fmtLong(fromISO(idate))} is taken by ${u.name}. Clear it?`
                 )
               ) {
-                delete leaves[idate];
-                saveLeaves();
-                render();
+                await dbDeleteDay(idate);
               }
             }
             return;
           }
           if (sel === "__CLEAR__") {
-            if (bookedBy) {
-              delete leaves[idate];
-              saveLeaves();
-              render();
-            }
+            if (bookedBy) await dbDeleteDay(idate);
             return;
           }
-          // Assign to selected staff
+          // Assign
           if (bookedBy && bookedBy !== sel) {
             const fromU = USERS_BY_ID[bookedBy];
             const toU = USERS_BY_ID[sel];
@@ -1079,31 +983,19 @@
             );
             if (!ok) return;
           }
-          // Toggle if same target already holds it
-          if (bookedBy === sel) {
-            delete leaves[idate];
-          } else {
-            leaves[idate] = sel;
-          }
-          saveLeaves();
-          render();
+          await dbUpsertDay(idate, sel);
           return;
         }
 
-        // Staff behavior: toggle own day if free, otherwise alert
+        // Staff: toggle own booking
         if (!bookedBy) {
-          leaves[idate] = currentUser.id;
-          saveLeaves();
-          render();
+          await dbInsertDay(idate, currentUser.id); // will fail if race; DB constraint protects
           return;
         }
         if (bookedBy === currentUser.id) {
-          delete leaves[idate];
-          saveLeaves();
-          render();
+          await dbDeleteDay(idate);
           return;
         }
-        // Overlap attempt
         const u = USERS_BY_ID[bookedBy];
         alert(
           `${fmtLong(fromISO(idate))} is already taken by ${
@@ -1112,61 +1004,79 @@
         );
       }
 
-      // --------------------------
-      // Frozen list: all leave ranges across all months
-      // --------------------------
+      // 12) DB helpers
+      async function dbInsertDay(dateISO, staffId) {
+        // Try insert; handle unique violation if someone else just booked it
+        const { error } = await supabase
+          .from("leaves")
+          .insert({ date: dateISO, staff_id: staffId });
+        if (error) {
+          if (error.code === "23505") {
+            alert(
+              `${fmtLong(fromISO(dateISO))} was just booked by someone else.`
+            );
+          } else {
+            console.error("Insert error:", error);
+            alert("Could not save. Please try again.");
+          }
+        }
+      }
+      async function dbUpsertDay(dateISO, staffId) {
+        const { error } = await supabase
+          .from("leaves")
+          .upsert({ date: dateISO, staff_id: staffId }, { onConflict: "date" });
+        if (error) {
+          console.error("Upsert error:", error);
+          alert("Could not assign. Please try again.");
+        }
+      }
+      async function dbDeleteDay(dateISO) {
+        const { error } = await supabase
+          .from("leaves")
+          .delete()
+          .eq("date", dateISO);
+        if (error) {
+          console.error("Delete error:", error);
+          alert("Could not remove. Please try again.");
+        }
+      }
+
+      // 13) Frozen list of all leave ranges
       function renderRangesList() {
-        // Build ranges per staff across entire dataset
-        // entries: [dateISO, userId], sorted by user then date
         const entries = Object.entries(leaves)
           .filter(([date, uid]) => !!USERS_BY_ID[uid])
-          .sort((a, b) => {
-            if (a[1] === b[1]) return a[0] < b[0] ? -1 : 1; // date asc
-            return a[1] < b[1] ? -1 : 1; // user asc
-          });
+          .sort((a, b) => (a[0] < b[0] ? -1 : 1)); // sort by date
 
+        // Group consecutive days per staff
         const ranges = [];
-        let curUser = null,
-          curStart = null,
-          curPrev = null;
-
+        let cur = null;
         for (const [dateStr, uid] of entries) {
-          if (curUser === null) {
-            curUser = uid;
-            curStart = dateStr;
-            curPrev = dateStr;
+          if (!cur) {
+            cur = { uid, start: dateStr, end: dateStr };
             continue;
           }
-          if (uid === curUser && isNextDay(curPrev, dateStr)) {
-            curPrev = dateStr; // extend current range
-            continue;
+          if (uid === cur.uid && isNextDay(cur.end, dateStr)) {
+            cur.end = dateStr; // extend
+          } else {
+            ranges.push(cur);
+            cur = { uid, start: dateStr, end: dateStr };
           }
-          // close previous range
-          ranges.push({ uid: curUser, start: curStart, end: curPrev });
-          // start new range
-          curUser = uid;
-          curStart = dateStr;
-          curPrev = dateStr;
         }
-        if (curUser !== null) {
-          ranges.push({ uid: curUser, start: curStart, end: curPrev });
-        }
+        if (cur) ranges.push(cur);
 
-        // Sort ranges by start date (global chronological)
+        // Sort ranges by start date
         ranges.sort((r1, r2) =>
           r1.start < r2.start ? -1 : r1.start > r2.start ? 1 : 0
         );
 
-        elListTitle.textContent = `All taken leave ranges (${fmtLong(
+        $listTitle.textContent = `All taken leave ranges (${fmtLong(
           START_DATE
         )} — ${fmtLong(END_DATE)})`;
-
         if (ranges.length === 0) {
-          elRangesList.innerHTML = `<div class="hint">No leave ranges yet.</div>`;
+          $rangesList.innerHTML = `<div class="hint">No leave ranges yet.</div>`;
           return;
         }
-
-        const html = ranges
+        $rangesList.innerHTML = ranges
           .map((r) => {
             const u = USERS_BY_ID[r.uid];
             const start = fmtLong(fromISO(r.start));
@@ -1180,25 +1090,28 @@
       `;
           })
           .join("");
-        elRangesList.innerHTML = html;
       }
 
-      // --------------------------
-      // Admin: Clear all
-      // --------------------------
-      function onClearAll() {
+      // 14) Admin: clear all bookings in range
+      async function onClearAll() {
         const count = Object.keys(leaves).length;
         if (count === 0) {
           alert("There are no bookings to clear.");
           return;
         }
         const ok = confirm(
-          `Clear all ${count} booking(s)? This cannot be undone.`
+          `Clear all ${count} booking(s) between ${DB_RANGE_START} and ${DB_RANGE_END}?`
         );
         if (!ok) return;
-        leaves = {};
-        saveLeaves();
-        render();
+        const { error } = await supabase
+          .from("leaves")
+          .delete()
+          .gte("date", DB_RANGE_START)
+          .lte("date", DB_RANGE_END);
+        if (error) {
+          console.error("Clear all error:", error);
+          alert("Could not clear bookings. Check policies and try again.");
+        }
       }
     </script>
   </body>
