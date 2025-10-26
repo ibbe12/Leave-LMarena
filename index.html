@@ -54,34 +54,21 @@
         border-radius: 16px;
         box-shadow: var(--shadow);
       }
-      /* Login */
-      #login {
-        max-width: 520px;
-        margin: 80px auto;
-        padding: 28px;
-      }
-      #login h1 {
-        margin: 0 0 4px;
-        font-size: 24px;
-      }
-      .sub {
-        color: var(--muted);
-        margin-bottom: 18px;
-        font-size: 14px;
-      }
       .row {
         display: flex;
-        gap: 12px;
+        gap: 10px;
+        flex-wrap: wrap;
       }
-      .field {
-        display: grid;
-        gap: 6px;
-        margin-bottom: 14px;
+      .line {
+        display: flex;
+        gap: 10px;
+        align-items: center;
       }
       label {
         font-size: 13px;
         color: var(--muted);
       }
+      input[type="date"],
       select,
       input[type="password"] {
         width: 100%;
@@ -89,9 +76,9 @@
         color: var(--text);
         border: 1px solid var(--outline);
         border-radius: 10px;
-        padding: 12px;
+        padding: 10px 12px;
         outline: none;
-        font-size: 15px;
+        font-size: 14px;
       }
       .btn {
         display: inline-flex;
@@ -105,7 +92,7 @@
           rgba(255, 255, 255, 0.04),
           rgba(255, 255, 255, 0.02)
         );
-        padding: 12px 14px;
+        padding: 10px 12px;
         border-radius: 10px;
         cursor: pointer;
         font-weight: 600;
@@ -119,17 +106,24 @@
         opacity: 0.6;
         cursor: not-allowed;
       }
-      .helper {
-        margin-top: 12px;
-        font-size: 13px;
-        color: var(--muted);
+      .btn.dangerLink {
+        border: 1px solid #3b2530;
+        background: #2a1420;
+        color: #ff9aad;
       }
-      .helper code {
-        background: var(--surface);
+      .miniBtn {
+        font-size: 11px;
+        padding: 4px 8px;
+        border-radius: 8px;
         border: 1px solid var(--outline);
-        padding: 2px 6px;
-        border-radius: 6px;
-        color: #cfe3ff;
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text);
+        cursor: pointer;
+      }
+      .miniBtn.danger {
+        background: #2a1420;
+        border-color: #3b2530;
+        color: #ff9aad;
       }
 
       /* Header */
@@ -190,7 +184,7 @@
       /* Layout */
       #main {
         display: grid;
-        grid-template-columns: 260px 1fr;
+        grid-template-columns: 290px 1fr;
         gap: 16px;
       }
       @media (max-width: 900px) {
@@ -231,6 +225,37 @@
       }
       .legendName {
         font-size: 14px;
+      }
+      .note {
+        font-size: 13px;
+        color: var(--muted);
+        line-height: 1.4;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--outline);
+        border-radius: 10px;
+        padding: 10px;
+        margin-top: 10px;
+      }
+
+      /* Apply box */
+      #applyBox {
+        margin-top: 12px;
+        border-top: 1px dashed var(--outline);
+        padding-top: 12px;
+      }
+      #applyBox .grid2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+      #applyBox .actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .hint {
+        font-size: 13px;
+        color: var(--muted);
       }
 
       /* Calendar */
@@ -334,7 +359,7 @@
         opacity: 0.98;
       }
 
-      /* Frozen ranges list */
+      /* Ranges list */
       .list {
         margin-top: 14px;
         padding: 12px;
@@ -350,15 +375,21 @@
         letter-spacing: 0.6px;
       }
       .listItem {
-        display: flex;
-        align-items: center;
+        display: grid;
+        grid-template-columns: 1fr auto;
         gap: 10px;
+        align-items: center;
         padding: 8px 10px;
         border-bottom: 1px dashed #263149;
         line-height: 1.2;
       }
       .listItem:last-child {
         border-bottom: 0;
+      }
+      .who {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
       }
       .whoDot {
         width: 10px;
@@ -373,31 +404,9 @@
       .rangeText {
         color: #c9d7f2;
       }
-
-      /* Admin tools */
-      #adminTools {
-        display: grid;
-        gap: 10px;
-        border-top: 1px dashed var(--outline);
-        padding-top: 12px;
-        margin-top: 12px;
-      }
-      #adminTools .line {
-        display: flex;
-        gap: 10px;
-        align-items: center;
-      }
-      #adminTools select {
-        background: var(--surface);
-        border: 1px solid var(--outline);
-        color: var(--text);
-        padding: 10px 10px;
-        border-radius: 10px;
-      }
-      .dangerLink {
-        border: 1px solid #3b2530;
-        background: #2a1420;
-        color: #ff9aad;
+      .rangeActions {
+        display: inline-flex;
+        gap: 6px;
       }
     </style>
   </head>
@@ -436,9 +445,9 @@
           <button id="loginBtn" class="btn primary">Sign in</button>
           <button id="fillAdmin" class="btn">Use Admin</button>
         </div>
-        <div class="helper">
+        <div class="hint" style="margin-top: 8px">
           Admin → <code>Admin / Admin@Leave</code> • Example →
-          <code></code>
+          <code>Ahmed Nabeel / moNar</code>
         </div>
       </section>
 
@@ -448,20 +457,59 @@
           <aside id="sidebar" class="card">
             <h3>Legend</h3>
             <div class="legend" id="legend"></div>
+
             <div class="note">
-              • Click a date to toggle your leave.<br />
-              • Only one person can take a given day (no overlaps).<br />
-              • Everyone can see all taken leaves.<br />
-              • Admin can assign or clear any day.
+              • Click a date to toggle your leave (single-day).<br />
+              • Or apply a range below (From → To).<br />
+              • One person per date. Everyone can see all leaves.
             </div>
 
-            <div id="adminTools" class="hidden">
+            <div id="applyBox" class="hidden">
+              <h3>Apply leave (range)</h3>
+              <div class="grid2">
+                <div class="field">
+                  <label for="fromDate">From</label>
+                  <input id="fromDate" type="date" />
+                </div>
+                <div class="field">
+                  <label for="toDate">To</label>
+                  <input id="toDate" type="date" />
+                </div>
+              </div>
+              <div class="actions" style="margin-top: 8px">
+                <button id="applyBtn" class="btn primary">Apply</button>
+                <button id="saveEditBtn" class="btn primary hidden">
+                  Save changes
+                </button>
+                <button id="cancelEditBtn" class="btn hidden">Cancel</button>
+                <button id="deleteEditBtn" class="btn dangerLink hidden">
+                  Delete range
+                </button>
+              </div>
+              <div id="applyHint" class="hint" style="margin-top: 8px">
+                Select start and end dates, then click Apply.
+              </div>
+            </div>
+
+            <div
+              id="adminTools"
+              class="hidden"
+              style="
+                margin-top: 12px;
+                border-top: 1px dashed var(--outline);
+                padding-top: 12px;
+              "
+            >
               <h3>Admin tools</h3>
               <div class="line">
                 <label for="adminAssign">Assign To</label>
                 <select id="adminAssign"></select>
               </div>
-              <div class="line">
+              <div class="hint">
+                Choose a staff, then click dates to assign. Pick CLEAR to remove
+                bookings. Reassigns will ask for confirmation.
+              </div>
+              <div class="line" style="margin-top: 8px">
                 <button id="clearAllBtn" class="btn dangerLink">
                   Clear all bookings
                 </button>
@@ -498,13 +546,13 @@
     <script type="module">
       import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-      // 1) Supabase config — replace with your project values
+      // Supabase config — replace with your project values
       const SUPABASE_URL = "https://clikohrdkrosjjztxgyn.supabase.co";
       const SUPABASE_ANON_KEY =
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNsaWtvaHJka3Jvc2pqenR4Z3luIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4MzE1NjEsImV4cCI6MjA3NjQwNzU2MX0.RKt7TgHiMaYAhtaNMA_DYQoTOGimOVAvUSZiwMF53rA";
       const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-      // 2) Date range
+      // Date range
       const START = { y: 2026, m: 0, d: 1 }; // Jan=0
       const END = { y: 2027, m: 0, d: 30 }; // Jan 30, 2027
       const START_DATE = new Date(START.y, START.m, START.d);
@@ -512,7 +560,7 @@
       const DB_RANGE_START = "2026-01-01";
       const DB_RANGE_END = "2027-01-30";
 
-      // 3) Users — your staff and passwords
+      // Users — your staff and passwords
       const STAFF_COLORS = [
         "#1abc9c",
         "#e74c3c",
@@ -614,14 +662,17 @@
       ];
       const USERS_BY_ID = Object.fromEntries(USERS.map((u) => [u.id, u]));
 
-      // 4) State
+      // State
       let currentUser = null; // {id, name, role, color}
-      let leaves = {}; // { 'YYYY-MM-DD': userId }  <- kept in memory, sourced from Supabase
+      let leaves = {}; // { 'YYYY-MM-DD': userId }  (from Supabase)
       let view = { y: START.y, m: START.m };
       const STORAGE = { CURRENT_USER: "alp_current_user_v1" };
       let realtimeChannel = null;
 
-      // 5) Utils
+      // Edit mode state for range editing
+      let editCtx = null; // { uid, start, end } when editing an existing range
+
+      // Utils
       const pad = (n) => (n < 10 ? "0" + n : "" + n);
       const iso = (y, m, d) => `${y}-${pad(m + 1)}-${pad(d)}`;
       const fromISO = (s) => {
@@ -645,6 +696,20 @@
       };
       const daysInMonth = (y, m) => new Date(y, m + 1, 0).getDate();
       const firstDOW = (y, m) => new Date(y, m, 1).getDay();
+      const addDays = (date, n) => {
+        const d = new Date(date);
+        d.setDate(d.getDate() + n);
+        return d;
+      };
+      const isNextDay = (a, b) => {
+        const d1 = addDays(fromISO(a), 1),
+          d2 = fromISO(b);
+        return (
+          d1.getFullYear() === d2.getFullYear() &&
+          d1.getMonth() === d2.getMonth() &&
+          d1.getDate() === d2.getDate()
+        );
+      };
       const clampViewToRange = () => {
         const cur = new Date(view.y, view.m, 1);
         const min = new Date(START.y, START.m, 1);
@@ -652,22 +717,26 @@
         if (cur < min) view = { y: START.y, m: START.m };
         if (cur > max) view = { y: END.y, m: END.m };
       };
-      const addDays = (date, n) => {
-        const d = new Date(date);
-        d.setDate(d.getDate() + n);
-        return d;
+      const clampISOToDbRange = (s) => {
+        if (!s) return s;
+        if (s < DB_RANGE_START) return DB_RANGE_START;
+        if (s > DB_RANGE_END) return DB_RANGE_END;
+        return s;
       };
-      const isNextDay = (a, b) => {
-        const d1 = addDays(fromISO(a), 1);
-        const d2 = fromISO(b);
-        return (
-          d1.getFullYear() === d2.getFullYear() &&
-          d1.getMonth() === d2.getMonth() &&
-          d1.getDate() === d2.getDate()
-        );
+      const listDatesISO = (startISO, endISO) => {
+        const out = [];
+        let d = fromISO(startISO);
+        const end = fromISO(endISO);
+        while (d <= end) {
+          out.push(
+            `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
+          );
+          d.setDate(d.getDate() + 1);
+        }
+        return out;
       };
 
-      // 6) DOM
+      // DOM
       const $login = document.getElementById("login");
       const $loginBtn = document.getElementById("loginBtn");
       const $username = document.getElementById("username");
@@ -686,6 +755,15 @@
       const $adminAssign = document.getElementById("adminAssign");
       const $clearAll = document.getElementById("clearAllBtn");
 
+      const $applyBox = document.getElementById("applyBox");
+      const $fromDate = document.getElementById("fromDate");
+      const $toDate = document.getElementById("toDate");
+      const $applyBtn = document.getElementById("applyBtn");
+      const $saveEditBtn = document.getElementById("saveEditBtn");
+      const $cancelEditBtn = document.getElementById("cancelEditBtn");
+      const $deleteEditBtn = document.getElementById("deleteEditBtn");
+      const $applyHint = document.getElementById("applyHint");
+
       const $prev = document.getElementById("prevBtn");
       const $next = document.getElementById("nextBtn");
       const $today = document.getElementById("todayBtn");
@@ -696,9 +774,9 @@
       const $rangesList = document.getElementById("rangesList");
       const $listTitle = document.getElementById("listTitle");
 
-      // 7) Init
+      // Init
       (async function init() {
-        // Populate UI bits
+        // Populate UI
         $username.innerHTML = USERS.map(
           (u) => `<option value="${u.id}">${u.name}</option>`
         ).join("");
@@ -722,6 +800,12 @@
             (u) => `<option value="${u.id}">${u.name}</option>`
           ),
         ].join("");
+
+        // Inputs min/max
+        [$fromDate, $toDate].forEach((inp) => {
+          inp.min = DB_RANGE_START;
+          inp.max = DB_RANGE_END;
+        });
 
         // Events
         $loginBtn.addEventListener("click", onLogin);
@@ -754,18 +838,24 @@
         });
         $clearAll.addEventListener("click", onClearAll);
 
-        // Load user + leaves from DB
+        // Range form events
+        $fromDate.addEventListener("change", onRangeInputChange);
+        $toDate.addEventListener("change", onRangeInputChange);
+        $applyBtn.addEventListener("click", onApplyRange);
+        $saveEditBtn.addEventListener("click", onSaveEditRange);
+        $cancelEditBtn.addEventListener("click", exitEditMode);
+        $deleteEditBtn.addEventListener("click", onDeleteEditRange);
+
+        // Load leaves + realtime
         const savedUserId = localStorage.getItem(STORAGE.CURRENT_USER);
+        await loadLeavesFromDB();
+        subscribeRealtime();
+
         if (savedUserId && USERS_BY_ID[savedUserId]) {
           currentUser = USERS_BY_ID[savedUserId];
-          await loadLeavesFromDB();
-          subscribeRealtime();
           showApp();
         } else {
           showLogin();
-          // Preload leaves so calendar can display even before login
-          await loadLeavesFromDB();
-          subscribeRealtime();
         }
       })();
 
@@ -782,11 +872,22 @@
         $header.classList.remove("hidden");
         $currentUserName.textContent = currentUser.name;
         $currentUserSwatch.style.background = currentUser.color || "#999";
-        $adminTools.classList.toggle("hidden", currentUser.role !== "admin");
+
+        // Staff get range-apply box; admin keeps admin tools
+        const isAdmin = currentUser.role === "admin";
+        $applyBox.classList.toggle("hidden", isAdmin); // hide for admin
+        $adminTools.classList.toggle("hidden", !isAdmin);
+
+        // Default range inputs
+        $fromDate.value = DB_RANGE_START;
+        $toDate.value = DB_RANGE_START;
+        $applyHint.textContent =
+          "Select start and end dates, then click Apply.";
+
         render();
       }
 
-      // 8) Auth (front-end demo only)
+      // Auth (front-end demo only)
       function onLogin() {
         const id = $username.value;
         const pwd = $password.value.trim();
@@ -798,14 +899,14 @@
         localStorage.setItem(STORAGE.CURRENT_USER, user.id);
         showApp();
       }
-
       function onLogout() {
         currentUser = null;
         localStorage.removeItem(STORAGE.CURRENT_USER);
+        exitEditMode();
         showLogin();
       }
 
-      // 9) DB: Load + Realtime
+      // DB: Load + Realtime
       async function loadLeavesFromDB() {
         const { data, error } = await supabase
           .from("leaves")
@@ -820,20 +921,21 @@
         for (const row of data) leaves[row.date] = row.staff_id;
         render();
       }
-
       function subscribeRealtime() {
-        if (realtimeChannel) return; // already
+        if (realtimeChannel) return;
         realtimeChannel = supabase
           .channel("leaves-changes")
           .on(
             "postgres_changes",
             { event: "*", schema: "public", table: "leaves" },
             (payload) => {
-              const e = payload.eventType;
-              if (e === "INSERT" || e === "UPDATE") {
+              if (
+                payload.eventType === "INSERT" ||
+                payload.eventType === "UPDATE"
+              ) {
                 const row = payload.new;
                 leaves[row.date] = row.staff_id;
-              } else if (e === "DELETE") {
+              } else if (payload.eventType === "DELETE") {
                 const row = payload.old;
                 delete leaves[row.date];
               }
@@ -843,14 +945,13 @@
           .subscribe();
       }
 
-      // 10) Render
+      // Render
       function render() {
         $monthLabel.textContent = monthLabel(view.y, view.m);
         renderGrid();
-        renderRangesList(); // frozen across months
+        renderRangesList();
         updateNavButtons();
       }
-
       function updateNavButtons() {
         const min = new Date(START.y, START.m, 1);
         const max = new Date(END.y, END.m, 1);
@@ -858,7 +959,6 @@
         $prev.disabled = cur <= min;
         $next.disabled = cur >= max;
       }
-
       function renderGrid() {
         $grid.innerHTML = "";
         const y = view.y,
@@ -878,19 +978,13 @@
             cellHTML(prevYear, prevMonth, d, {
               disabled: true,
               idate: iso(prevYear, prevMonth, d),
-              inRange: withinRange(prevYear, prevMonth, d),
             })
           );
         }
         // Current
         for (let d = 1; d <= dim; d++) {
-          cells.push(
-            cellHTML(y, m, d, {
-              disabled: !withinRange(y, m, d),
-              idate: iso(y, m, d),
-              inRange: true,
-            })
-          );
+          const disabled = !withinRange(y, m, d);
+          cells.push(cellHTML(y, m, d, { disabled, idate: iso(y, m, d) }));
         }
         // Trailing
         const remaining = Math.ceil(cells.length / 7) * 7 - cells.length;
@@ -901,7 +995,6 @@
             cellHTML(nextYear, nextMonth, d, {
               disabled: true,
               idate: iso(nextYear, nextMonth, d),
-              inRange: withinRange(nextYear, nextMonth, d),
             })
           );
         }
@@ -912,7 +1005,6 @@
           $c.addEventListener("click", () => onDayClick($c.dataset.date));
         });
       }
-
       function cellHTML(y, m, d, { disabled, idate }) {
         const now = new Date();
         const isToday =
@@ -947,7 +1039,7 @@
     `;
       }
 
-      // 11) Click handling with Supabase persistence
+      // Click handling (single-day toggle)
       async function onDayClick(idate) {
         if (!currentUser) return;
         const isAdmin = currentUser.role === "admin";
@@ -972,7 +1064,6 @@
             if (bookedBy) await dbDeleteDay(idate);
             return;
           }
-          // Assign
           if (bookedBy && bookedBy !== sel) {
             const fromU = USERS_BY_ID[bookedBy];
             const toU = USERS_BY_ID[sel];
@@ -989,7 +1080,7 @@
 
         // Staff: toggle own booking
         if (!bookedBy) {
-          await dbInsertDay(idate, currentUser.id); // will fail if race; DB constraint protects
+          await dbInsertDay(idate, currentUser.id);
           return;
         }
         if (bookedBy === currentUser.id) {
@@ -1004,17 +1095,146 @@
         );
       }
 
-      // 12) DB helpers
+      // Apply box: range selection
+      function onRangeInputChange() {
+        let s = clampISOToDbRange($fromDate.value);
+        let e = clampISOToDbRange($toDate.value);
+        if (s && e && e < s) e = s;
+        $fromDate.value = s || "";
+        $toDate.value = e || "";
+        if (s && e) {
+          const days = listDatesISO(s, e).length;
+          $applyHint.textContent = `Selected ${days} day(s): ${fmtLong(
+            fromISO(s)
+          )} → ${fmtLong(fromISO(e))}`;
+        }
+      }
+      async function onApplyRange() {
+        if (!currentUser || currentUser.role !== "staff") return;
+        const s = $fromDate.value,
+          e = $toDate.value;
+        if (!s || !e) return alert("Please select both From and To dates.");
+        const days = listDatesISO(s, e).length;
+        const ok = confirm(
+          `Apply leave for ${currentUser.name}\n${fmtLong(
+            fromISO(s)
+          )} → ${fmtLong(fromISO(e))} (${days} day(s))?`
+        );
+        if (!ok) return;
+        disableApplyButtons(true);
+        try {
+          await applyRangeForUser(currentUser.id, s, e);
+          exitEditMode();
+        } finally {
+          disableApplyButtons(false);
+        }
+      }
+
+      function enterEditMode(uid, start, end) {
+        editCtx = { uid, start, end };
+        $fromDate.value = start;
+        $toDate.value = end;
+        onRangeInputChange();
+        // Show edit controls
+        $applyBtn.classList.add("hidden");
+        $saveEditBtn.classList.remove("hidden");
+        $cancelEditBtn.classList.remove("hidden");
+        $deleteEditBtn.classList.remove("hidden");
+        // Hint
+        const who = USERS_BY_ID[uid]?.name || "Staff";
+        $applyHint.textContent = `Editing: ${who} — ${fmtLong(
+          fromISO(start)
+        )} → ${fmtLong(fromISO(end))}`;
+        // Ensure box visible (staff only; admin won’t see box)
+        if (currentUser.role === "staff")
+          $applyBox.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+      function exitEditMode() {
+        editCtx = null;
+        $saveEditBtn.classList.add("hidden");
+        $cancelEditBtn.classList.add("hidden");
+        $deleteEditBtn.classList.add("hidden");
+        $applyBtn.classList.remove("hidden");
+        $applyHint.textContent =
+          "Select start and end dates, then click Apply.";
+      }
+      async function onSaveEditRange() {
+        if (!editCtx) return;
+        const { uid, start: oldStart, end: oldEnd } = editCtx;
+        if (!currentUser) return;
+        const isOwner = currentUser.id === uid;
+        const isAdmin = currentUser.role === "admin";
+        if (!isOwner && !isAdmin)
+          return alert("You can only edit your own leave.");
+        const newStart = $fromDate.value,
+          newEnd = $toDate.value;
+        if (!newStart || !newEnd)
+          return alert("Please select both From and To dates.");
+        const whoName = USERS_BY_ID[uid]?.name || "Staff";
+        const ok = confirm(
+          `Save changes for ${whoName}?\n${fmtLong(
+            fromISO(oldStart)
+          )} → ${fmtLong(fromISO(oldEnd))}\nbecomes\n${fmtLong(
+            fromISO(newStart)
+          )} → ${fmtLong(fromISO(newEnd))}`
+        );
+        if (!ok) return;
+        disableApplyButtons(true);
+        try {
+          await editRangeForStaff(uid, oldStart, oldEnd, newStart, newEnd);
+          exitEditMode();
+        } finally {
+          disableApplyButtons(false);
+        }
+      }
+      async function onDeleteEditRange() {
+        if (!editCtx) return;
+        const { uid, start, end } = editCtx;
+        if (!currentUser) return;
+        const isOwner = currentUser.id === uid;
+        const isAdmin = currentUser.role === "admin";
+        if (!isOwner && !isAdmin)
+          return alert("You can only delete your own leave.");
+        const whoName = USERS_BY_ID[uid]?.name || "Staff";
+        const days = listDatesISO(start, end).length;
+        const ok = confirm(
+          `Delete ${whoName}'s leave?\n${fmtLong(fromISO(start))} → ${fmtLong(
+            fromISO(end)
+          )} (${days} day(s))`
+        );
+        if (!ok) return;
+        disableApplyButtons(true);
+        try {
+          await deleteRangeForStaff(uid, start, end);
+          exitEditMode();
+        } finally {
+          disableApplyButtons(false);
+        }
+      }
+      function disableApplyButtons(disabled) {
+        [
+          $applyBtn,
+          $saveEditBtn,
+          $cancelEditBtn,
+          $deleteEditBtn,
+          $fromDate,
+          $toDate,
+        ].forEach((el) => {
+          if (el) el.disabled = disabled;
+        });
+      }
+
+      // DB helpers (single day)
       async function dbInsertDay(dateISO, staffId) {
-        // Try insert; handle unique violation if someone else just booked it
         const { error } = await supabase
           .from("leaves")
           .insert({ date: dateISO, staff_id: staffId });
         if (error) {
           if (error.code === "23505") {
-            alert(
-              `${fmtLong(fromISO(dateISO))} was just booked by someone else.`
-            );
+            const by = leaves[dateISO]
+              ? USERS_BY_ID[leaves[dateISO]]?.name || "someone else"
+              : "someone else";
+            alert(`${fmtLong(fromISO(dateISO))} was just booked by ${by}.`);
           } else {
             console.error("Insert error:", error);
             alert("Could not save. Please try again.");
@@ -1041,13 +1261,143 @@
         }
       }
 
-      // 13) Frozen list of all leave ranges
+      // DB helpers (range)
+      async function applyRangeForUser(staffId, startISO, endISO) {
+        // Pre-check conflicts
+        const { data, error } = await supabase
+          .from("leaves")
+          .select("date, staff_id")
+          .gte("date", startISO)
+          .lte("date", endISO);
+        if (error) {
+          console.error(error);
+          alert("Could not check availability.");
+          return;
+        }
+
+        const conflicts = data.filter((r) => r.staff_id !== staffId);
+        if (conflicts.length) {
+          const c = conflicts[0];
+          const by = USERS_BY_ID[c.staff_id]?.name || "another staff";
+          return alert(
+            `${fmtLong(
+              fromISO(c.date)
+            )} is already taken by ${by}. Overlapping leaves are not allowed.`
+          );
+        }
+
+        // Insert only missing dates
+        const alreadyMine = new Set(
+          data.filter((r) => r.staff_id === staffId).map((r) => r.date)
+        );
+        const all = listDatesISO(startISO, endISO);
+        const toInsert = all
+          .filter((d) => !alreadyMine.has(d))
+          .map((d) => ({ date: d, staff_id: staffId }));
+        if (!toInsert.length) {
+          alert("You already have leave for the selected range.");
+          return;
+        }
+
+        const ins = await supabase.from("leaves").insert(toInsert);
+        if (ins.error) {
+          if (ins.error.code === "23505") {
+            alert(
+              "Some dates were just taken by someone else. Please refresh and try again."
+            );
+          } else {
+            console.error(ins.error);
+            alert("Could not apply leave. Please try again.");
+          }
+        }
+      }
+
+      async function deleteRangeForStaff(staffId, startISO, endISO) {
+        const { error } = await supabase
+          .from("leaves")
+          .delete()
+          .gte("date", startISO)
+          .lte("date", endISO)
+          .eq("staff_id", staffId);
+        if (error) {
+          console.error(error);
+          alert("Could not delete leave.");
+        }
+      }
+
+      async function editRangeForStaff(
+        staffId,
+        oldStart,
+        oldEnd,
+        newStart,
+        newEnd
+      ) {
+        // 1) Check new range conflicts
+        const chk = await supabase
+          .from("leaves")
+          .select("date, staff_id")
+          .gte("date", newStart)
+          .lte("date", newEnd);
+        if (chk.error) {
+          console.error(chk.error);
+          alert("Could not check availability.");
+          return;
+        }
+        const conflicts = chk.data.filter((r) => r.staff_id !== staffId);
+        if (conflicts.length) {
+          const c = conflicts[0];
+          const by = USERS_BY_ID[c.staff_id]?.name || "another staff";
+          return alert(
+            `${fmtLong(fromISO(c.date))} is already taken by ${by}.`
+          );
+        }
+
+        // 2) Insert missing new dates (skip ones already mine)
+        const mineSet = new Set(
+          chk.data.filter((r) => r.staff_id === staffId).map((r) => r.date)
+        );
+        const newAll = listDatesISO(newStart, newEnd);
+        const toInsert = newAll
+          .filter((d) => !mineSet.has(d))
+          .map((d) => ({ date: d, staff_id: staffId }));
+        if (toInsert.length) {
+          const ins = await supabase.from("leaves").insert(toInsert);
+          if (ins.error) {
+            if (ins.error.code === "23505") {
+              alert(
+                "Some dates were just taken by someone else. Please try again."
+              );
+            } else {
+              console.error(ins.error);
+              alert("Could not save changes.");
+            }
+            return;
+          }
+        }
+
+        // 3) Delete old dates that are no longer in new range
+        const oldAll = listDatesISO(oldStart, oldEnd);
+        const toDelete = oldAll.filter((d) => !newAll.includes(d));
+        if (toDelete.length) {
+          const del = await supabase
+            .from("leaves")
+            .delete()
+            .in("date", toDelete)
+            .eq("staff_id", staffId);
+          if (del.error) {
+            console.error(del.error);
+            alert("Could not cleanup old days (changes partially applied).");
+          }
+        }
+      }
+
+      // Ranges list (frozen across months) with Edit/Delete for owner (and admin)
       function renderRangesList() {
+        // Build ranges per staff across entire dataset
         const entries = Object.entries(leaves)
           .filter(([date, uid]) => !!USERS_BY_ID[uid])
           .sort((a, b) => (a[0] < b[0] ? -1 : 1)); // sort by date
 
-        // Group consecutive days per staff
         const ranges = [];
         let cur = null;
         for (const [dateStr, uid] of entries) {
@@ -1056,7 +1406,7 @@
             continue;
           }
           if (uid === cur.uid && isNextDay(cur.end, dateStr)) {
-            cur.end = dateStr; // extend
+            cur.end = dateStr;
           } else {
             ranges.push(cur);
             cur = { uid, start: dateStr, end: dateStr };
@@ -1064,7 +1414,7 @@
         }
         if (cur) ranges.push(cur);
 
-        // Sort ranges by start date
+        // Sort ranges chronologically
         ranges.sort((r1, r2) =>
           r1.start < r2.start ? -1 : r1.start > r2.start ? 1 : 0
         );
@@ -1076,23 +1426,94 @@
           $rangesList.innerHTML = `<div class="hint">No leave ranges yet.</div>`;
           return;
         }
-        $rangesList.innerHTML = ranges
+
+        const html = ranges
           .map((r) => {
             const u = USERS_BY_ID[r.uid];
             const start = fmtLong(fromISO(r.start));
             const end = fmtLong(fromISO(r.end));
+            const canManage =
+              currentUser &&
+              (currentUser.role === "admin" || currentUser.id === r.uid);
             return `
-        <div class="listItem" title="${u.name}: ${start} to ${end}">
-          <span class="whoDot" style="background:${u.color}"></span>
-          <span class="whoName">${u.name}</span>
-          <span class="rangeText">— ${start} → ${end}</span>
+        <div class="listItem" data-uid="${r.uid}" data-start="${
+              r.start
+            }" data-end="${r.end}">
+          <div class="who">
+            <span class="whoDot" style="background:${u.color}"></span>
+            <span class="whoName">${u.name}</span>
+            <span class="rangeText">— ${start} → ${end}</span>
+          </div>
+          <div class="rangeActions">
+            ${
+              canManage && currentUser.role === "staff"
+                ? `
+              <button class="miniBtn editBtn">Edit</button>
+              <button class="miniBtn danger deleteBtn">Delete</button>
+            `
+                : ""
+            }
+            ${
+              canManage && currentUser.role === "admin"
+                ? `
+              <!-- Admin already has tools; still allow quick actions -->
+              <button class="miniBtn editBtn">Edit</button>
+              <button class="miniBtn danger deleteBtn">Delete</button>
+            `
+                : ""
+            }
+          </div>
         </div>
       `;
           })
           .join("");
+        $rangesList.innerHTML = html;
+
+        // Bind Edit/Delete buttons
+        $rangesList.querySelectorAll(".editBtn").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            const row = e.target.closest(".listItem");
+            const uid = row.dataset.uid,
+              start = row.dataset.start,
+              end = row.dataset.end;
+            // Staff can only edit their own (admin can edit anyone)
+            if (currentUser.role !== "admin" && currentUser.id !== uid) {
+              alert("You can only edit your own leave.");
+              return;
+            }
+            if ($applyBox.classList.contains("hidden")) {
+              alert(
+                "Edit is available for staff only in this panel. Admin can reassign via Admin tools."
+              );
+              return;
+            }
+            enterEditMode(uid, start, end);
+          });
+        });
+        $rangesList.querySelectorAll(".deleteBtn").forEach((btn) => {
+          btn.addEventListener("click", async (e) => {
+            const row = e.target.closest(".listItem");
+            const uid = row.dataset.uid,
+              start = row.dataset.start,
+              end = row.dataset.end;
+            if (currentUser.role !== "admin" && currentUser.id !== uid) {
+              alert("You can only delete your own leave.");
+              return;
+            }
+            const whoName = USERS_BY_ID[uid]?.name || "Staff";
+            const days = listDatesISO(start, end).length;
+            const ok = confirm(
+              `Delete ${whoName}'s leave?\n${fmtLong(
+                fromISO(start)
+              )} → ${fmtLong(fromISO(end))} (${days} day(s))`
+            );
+            if (!ok) return;
+            await deleteRangeForStaff(uid, start, end);
+          });
+        });
       }
 
-      // 14) Admin: clear all bookings in range
+      // Admin: clear all bookings in range
       async function onClearAll() {
         const count = Object.keys(leaves).length;
         if (count === 0) {
@@ -1110,7 +1531,7 @@
           .lte("date", DB_RANGE_END);
         if (error) {
           console.error("Clear all error:", error);
-          alert("Could not clear bookings. Check policies and try again.");
+          alert("Could not clear bookings.");
         }
       }
     </script>
